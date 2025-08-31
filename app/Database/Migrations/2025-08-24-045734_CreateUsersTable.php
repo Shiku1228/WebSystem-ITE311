@@ -11,7 +11,7 @@ class CreateUsersTable extends Migration
         $this->forge->addField([
             'id' => [
                 'type'           => 'INT',
-                'constraint'     => 11,
+                'constraint'     => 5,
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
@@ -29,7 +29,8 @@ class CreateUsersTable extends Migration
                 'constraint' => 255,
             ],
             'role' => [
-                'type'       => 'ENUM("student","instructor","admin")',
+                'type'       => 'ENUM',
+                'constraint' => ['admin', 'instructor', 'student'],
                 'default'    => 'student',
             ],
             'created_at' => [
@@ -41,12 +42,13 @@ class CreateUsersTable extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('id', true);
-        $this->forge->createTable('users', true);
+
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('users');
     }
 
     public function down()
     {
-        $this->forge->dropTable('users', true);
+        $this->forge->dropTable('users');
     }
 }
