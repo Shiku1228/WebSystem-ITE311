@@ -22,7 +22,6 @@
                     <div class="alert alert-danger"><?= $error ?></div>
                 <?php endif; ?>
 
-
                 <div class="card shadow">
                     <div class="card-body">
                         <a href="<?= base_url('/') ?>" class="btn btn-secondary mb-3">&larr; Back</a>

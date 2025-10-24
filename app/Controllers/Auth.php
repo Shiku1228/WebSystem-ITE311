@@ -141,14 +141,8 @@ class Auth extends BaseController
                         // Add success message and redirect
                         session()->setFlashdata('success', 'Login successful! Welcome ' . $user['name']);
                         
-                        // Redirect based on role using CodeIgniter's redirect
-                        if ($user['role'] === 'admin') {
-                            return redirect()->to('/admin/dashboard');
-                        } elseif ($user['role'] === 'instructor') {
-                            return redirect()->to('/instructor/dashboard');
-                        } else {
-                            return redirect()->to('/student/dashboard');
-                        }
+                        // Redirect to unified dashboard
+                        return redirect()->to('/dashboard');
                     } else {
                         $data['error'] = 'Invalid email or password.';
                     }
@@ -174,10 +168,67 @@ class Auth extends BaseController
 
     public function dashboard()
     {
+        // Check if user is logged in
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/auth/login');
         }
-        return view('dashboard');
+
+        // Get user data from session
+        $role = session()->get('role');
+        $name = session()->get('name');
+        $email = session()->get('email');
+
+        // Prepare data array with user info
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'role' => $role
+        ];
+
+        // Add role-specific data
+        try {
+            $dsn = "mysql:host=localhost;dbname=lms_latangga;charset=utf8mb4";
+            $pdo = new \PDO($dsn, 'root', '', [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+            ]);
+
+            if ($role === 'admin') {
+                // Get admin statistics
+                $stmt = $pdo->query("SELECT COUNT(*) as count FROM users");
+                $data['total_users'] = $stmt->fetch()['count'];
+                
+                $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE role = 'instructor'");
+                $data['total_instructors'] = $stmt->fetch()['count'];
+                
+                $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE role = 'student'");
+                $data['total_students'] = $stmt->fetch()['count'];
+                
+            } elseif ($role === 'instructor') {
+                // Get instructor statistics
+                $data['total_classes'] = 0; // Placeholder - implement when classes table exists
+                $data['total_assignments'] = 0; // Placeholder
+                $data['total_students'] = 0; // Placeholder
+                
+            } else {
+                // Get student statistics
+                $data['total_courses'] = 0; // Placeholder - implement when enrollments table exists
+                $data['pending_assignments'] = 0; // Placeholder
+                $data['gpa'] = 'N/A'; // Placeholder
+            }
+        } catch (\PDOException $e) {
+            // If database query fails, use default values
+            $data['total_users'] = 0;
+            $data['total_instructors'] = 0;
+            $data['total_students'] = 0;
+            $data['total_classes'] = 0;
+            $data['total_assignments'] = 0;
+            $data['total_courses'] = 0;
+            $data['pending_assignments'] = 0;
+            $data['gpa'] = 'N/A';
+        }
+
+        return view('auth/dashboard', $data);
     }
 
     public function studentDashboard()

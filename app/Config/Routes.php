@@ -30,7 +30,7 @@ $routes->match(['get', 'post'], '/auth/debug', 'Auth::debug');
 $routes->get('/auth/testdb', 'Auth::testDb');
 
 // Dashboard routes by role
-$routes->get('/student/dashboard', 'Auth::studentDashboard');
-$routes->get('/instructor/dashboard', 'Auth::instructorDashboard');
-$routes->get('/admin/dashboard', 'Auth::adminDashboard');
+$routes->get('/dashboard', 'Auth::dashboard');
 
+// Template example route
+$routes->get('/template-example', 'Home::templateExample');

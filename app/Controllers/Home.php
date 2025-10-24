@@ -18,4 +18,9 @@ class Home extends BaseController
     {
         return view('contact');
     }
+
+    public function templateExample()
+    {
+        return view('templates/example_page');
+    }
 }

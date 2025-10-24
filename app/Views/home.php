@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="row">
     <div class="col-lg-12">
-        <!-- Hero Section -->
+        <!-- header, emphasized part -->
         <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
             <h1 class="display-4">Welcome to My WebSystem</h1>
             <p class="lead">A modern web application built with CodeIgniter 4 framework.</p>
@@ -15,7 +15,7 @@
 </div>
 
 <div class="row">
-    <!-- Features Section -->
+    <!-- here describe the features hehe -->
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body">
