@@ -165,29 +165,118 @@
                 <div class="card shadow-sm h-100">
                     <div class="card-body text-center">
                         <i class="fas fa-book-open text-info fa-3x mb-3"></i>
-                        <h5 class="card-title">My Courses</h5>
-                        <h2 class="text-info"><?= esc($total_courses ?? 0) ?></h2>
-                        <a href="#" class="btn btn-outline-info mt-2">View Courses</a>
+                        <h5 class="card-title">Enrolled Courses</h5>
+                        <h2 class="text-info"><?= count($enrolled_courses ?? []) ?></h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-tasks text-warning fa-3x mb-3"></i>
-                        <h5 class="card-title">Assignments</h5>
-                        <h2 class="text-warning"><?= esc($pending_assignments ?? 0) ?></h2>
-                        <a href="#" class="btn btn-outline-warning mt-2">View Assignments</a>
+                        <i class="fas fa-list text-success fa-3x mb-3"></i>
+                        <h5 class="card-title">Available Courses</h5>
+                        <h2 class="text-success"><?= count($available_courses ?? []) ?></h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-chart-line text-success fa-3x mb-3"></i>
-                        <h5 class="card-title">My Grades</h5>
-                        <h2 class="text-success"><?= esc($gpa ?? 'N/A') ?></h2>
-                        <a href="#" class="btn btn-outline-success mt-2">View Grades</a>
+                        <i class="fas fa-chart-line text-warning fa-3x mb-3"></i>
+                        <h5 class="card-title">Total Courses</h5>
+                        <h2 class="text-warning"><?= count($enrolled_courses ?? []) + count($available_courses ?? []) ?></h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrolled Courses Section -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-book-open"></i> My Enrolled Courses
+                            <span class="badge bg-light text-dark ms-2"><?= count($enrolled_courses ?? []) ?></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($enrolled_courses)): ?>
+                            <div class="list-group">
+                                <?php foreach ($enrolled_courses as $course): ?>
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1 text-info">
+                                                    <i class="fas fa-book"></i> <?= esc($course['title']) ?>
+                                                </h5>
+                                                <p class="mb-2 text-muted">
+                                                    <?= esc($course['description'] ?? 'No description available') ?>
+                                                </p>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-chalkboard-teacher text-primary"></i>
+                                                    <strong>Instructor:</strong> <?= esc($course['instructor_name'] ?? 'N/A') ?>
+                                                    &nbsp;|&nbsp;
+                                                    <i class="fas fa-calendar-alt text-success"></i>
+                                                    <strong>Enrolled:</strong> <?= date('M d, Y', strtotime($course['enrolled_at'])) ?>
+                                                </small>
+                                            </div>
+                                            <span class="badge bg-success ms-3">
+                                                <i class="fas fa-check"></i> Enrolled
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle"></i> You are not enrolled in any courses yet. Browse available courses below to get started!
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Courses Section -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list"></i> Available Courses
+                            <span class="badge bg-light text-dark ms-2"><?= count($available_courses ?? []) ?></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($available_courses)): ?>
+                            <div class="list-group">
+                                <?php foreach ($available_courses as $course): ?>
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1 text-success">
+                                                    <i class="fas fa-book"></i> <?= esc($course['title']) ?>
+                                                </h5>
+                                                <p class="mb-2 text-muted">
+                                                    <?= esc($course['description'] ?? 'No description available') ?>
+                                                </p>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-chalkboard-teacher text-primary"></i>
+                                                    <strong>Instructor:</strong> <?= esc($course['instructor_name'] ?? 'N/A') ?>
+                                                </small>
+                                            </div>
+                                            <button 
+                                                class="btn btn-success enroll-btn ms-3" 
+                                                data-course-id="<?= esc($course['id']) ?>"
+                                                data-course-title="<?= esc($course['title']) ?>">
+                                                <i class="fas fa-plus-circle"></i> Enroll
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-check-circle"></i> Great! You're enrolled in all available courses.
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -257,6 +346,163 @@
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="enrollmentToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-bell me-2"></i>
+            <strong class="me-auto">Notification</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            <!-- Message will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // AJAX Enrollment Handler with jQuery
+    $(document).ready(function() {
+        // Listen for click on Enroll buttons
+        $('.enroll-btn').on('click', function(e) {
+            e.preventDefault(); // Prevent default behavior
+            
+            const $button = $(this);
+            const courseId = $button.data('course-id');
+            const courseTitle = $button.data('course-title');
+            const originalText = $button.html();
+            
+            // Disable button and show loading state
+            $button.prop('disabled', true);
+            $button.html('<i class="fas fa-spinner fa-spin"></i> Enrolling...');
+            
+            // Send AJAX POST request
+            $.post('<?= base_url('course/enroll') ?>', {
+                course_id: courseId
+            })
+            .done(function(response) {
+                if (response.success) {
+                    // Show success alert
+                    const alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> ${response.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    // Insert alert at the top of the available courses section
+                    $('.card-header:contains("Available Courses")').parent().find('.card-body').prepend(alertHtml);
+                    
+                    // Hide/disable the enroll button for this course
+                    $button.closest('.list-group-item').fadeOut(400, function() {
+                        $(this).remove();
+                        
+                        // Update available courses count
+                        const availableCount = $('.card-header:contains("Available Courses") .badge');
+                        const currentCount = parseInt(availableCount.text()) || 0;
+                        availableCount.text(currentCount - 1);
+                        
+                        // Update stats card
+                        const statsAvailable = $('.card-title:contains("Available Courses")').next('h2');
+                        statsAvailable.text(currentCount - 1);
+                        
+                        // Check if no more available courses
+                        if (currentCount - 1 === 0) {
+                            $('.card-header:contains("Available Courses")').parent().find('.card-body').html(`
+                                <div class="alert alert-success mb-0">
+                                    <i class="fas fa-check-circle"></i> Great! You're enrolled in all available courses.
+                                </div>
+                            `);
+                        }
+                    });
+                    
+                    // Add course to enrolled list dynamically
+                    const enrolledDate = new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    const enrolledHtml = `
+                        <div class="list-group-item" style="display:none;">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1 text-info">
+                                        <i class="fas fa-book"></i> ${courseTitle}
+                                    </h5>
+                                    <p class="mb-2 text-muted">
+                                        Course details loading...
+                                    </p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-chalkboard-teacher text-primary"></i>
+                                        <strong>Instructor:</strong> N/A
+                                        &nbsp;|&nbsp;
+                                        <i class="fas fa-calendar-alt text-success"></i>
+                                        <strong>Enrolled:</strong> ${enrolledDate}
+                                    </small>
+                                </div>
+                                <span class="badge bg-success ms-3">
+                                    <i class="fas fa-check"></i> Enrolled
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Check if enrolled courses list is empty
+                    const enrolledBody = $('.card-header:contains("My Enrolled Courses")').parent().find('.card-body');
+                    if (enrolledBody.find('.alert-info').length > 0) {
+                        // Replace the "no courses" message with the list group
+                        enrolledBody.html('<div class="list-group"></div>');
+                    }
+                    
+                    // Prepend to enrolled courses list
+                    enrolledBody.find('.list-group').prepend(enrolledHtml);
+                    enrolledBody.find('.list-group-item:first').fadeIn(400);
+                    
+                    // Update enrolled courses count
+                    const enrolledCount = $('.card-header:contains("My Enrolled Courses") .badge');
+                    const currentEnrolled = parseInt(enrolledCount.text()) || 0;
+                    enrolledCount.text(currentEnrolled + 1);
+                    
+                    // Update stats card
+                    const statsEnrolled = $('.card-title:contains("Enrolled Courses")').next('h2');
+                    statsEnrolled.text(currentEnrolled + 1);
+                    
+                } else {
+                    // Show error alert
+                    const alertHtml = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle"></i> ${response.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    $('.card-header:contains("Available Courses")').parent().find('.card-body').prepend(alertHtml);
+                    
+                    // Re-enable button
+                    $button.prop('disabled', false);
+                    $button.html(originalText);
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('Error:', error);
+                
+                // Show error alert
+                const alertHtml = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> An error occurred. Please try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('.card-header:contains("Available Courses")').parent().find('.card-body').prepend(alertHtml);
+                
+                // Re-enable button
+                $button.prop('disabled', false);
+                $button.html(originalText);
+            });
+        });
+    });
+</script>
 </body>
 </html>

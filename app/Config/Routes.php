@@ -32,5 +32,8 @@ $routes->get('/auth/testdb', 'Auth::testDb');
 // Dashboard routes by role
 $routes->get('/dashboard', 'Auth::dashboard');
 
+// Course enrollment route
+$routes->post('/course/enroll', 'Course::enroll');
+
 // Template example route
 $routes->get('/template-example', 'Home::templateExample');

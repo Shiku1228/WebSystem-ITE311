@@ -177,6 +177,7 @@ class Auth extends BaseController
         $role = session()->get('role');
         $name = session()->get('name');
         $email = session()->get('email');
+        $userId = session()->get('id');
 
         // Prepare data array with user info
         $data = [
@@ -211,8 +212,13 @@ class Auth extends BaseController
                 $data['total_students'] = 0; // Placeholder
                 
             } else {
-                // Get student statistics
-                $data['total_courses'] = 0; // Placeholder - implement when enrollments table exists
+                // Student role - load enrollment data
+                $enrollmentModel = new \App\Models\EnrollmentModel();
+                $courseModel = new \App\Models\CourseModel();
+                
+                $data['enrolled_courses'] = $enrollmentModel->getUserEnrollments($userId);
+                $data['available_courses'] = $courseModel->getAvailableCourses($userId);
+                $data['total_courses'] = 0; // Placeholder
                 $data['pending_assignments'] = 0; // Placeholder
                 $data['gpa'] = 'N/A'; // Placeholder
             }
@@ -226,6 +232,8 @@ class Auth extends BaseController
             $data['total_courses'] = 0;
             $data['pending_assignments'] = 0;
             $data['gpa'] = 'N/A';
+            $data['enrolled_courses'] = [];
+            $data['available_courses'] = [];
         }
 
         return view('auth/dashboard', $data);
@@ -245,16 +253,25 @@ class Auth extends BaseController
             return redirect()->to('/auth/login');
         }
         
+        // Load models
+        $enrollmentModel = new \App\Models\EnrollmentModel();
+        $courseModel = new \App\Models\CourseModel();
+        
+        $userId = session()->get('id');
+        
         $data = [
-            'user' => [
-                'name' => session()->get('name') ?: 'Test User',
-                'email' => session()->get('email') ?: 'test@example.com',
-                'role' => session()->get('role') ?: 'student'
-            ],
+            'name' => session()->get('name') ?: 'Test User',
+            'email' => session()->get('email') ?: 'test@example.com',
+            'role' => session()->get('role') ?: 'student',
+            'enrolled_courses' => $enrollmentModel->getUserEnrollments($userId),
+            'available_courses' => $courseModel->getAvailableCourses($userId),
+            'total_courses' => 0,
+            'pending_assignments' => 0,
+            'gpa' => 'N/A',
             'debug_session' => $sessionData
         ];
         
-        return view('dashboards/student', $data);
+        return view('auth/dashboard', $data);
     }
 
     public function instructorDashboard()

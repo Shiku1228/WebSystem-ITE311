@@ -35,14 +35,12 @@ class CreateSubmissionsTable extends Migration
                 'null'       => true,
             ],
             'submitted_at' => [
-                'type'    => 'DATETIME',
-                'null'    => false,
-                'default' => 'CURRENT_TIMESTAMP',
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
 
-        $this->forge->addKey('id', true);
-
+        $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('quiz_id', 'quizzes', 'id', 'CASCADE', 'CASCADE');
 
